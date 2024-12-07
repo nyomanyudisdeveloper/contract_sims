@@ -1,33 +1,13 @@
-import { getMembershipByEmailService, registrationService } from "../model/membership.js"
+import { getMembershipByEmailService, registrationService, updateProfileImageMembershipService, updateProfileMembershipService } from "../model/membership.js"
 import bcrypt from "bcryptjs"
-import { validateEmail } from "../utils/stringHelper.js"
+import jwt from "jsonwebtoken"
+import dotenv from 'dotenv'
 
-export const registration = async (req,res,next) => {
+dotenv.config()
+
+export const registration = async (req,res) => {
     try{
         const {email,first_name="",last_name="",password} = req.body
-
-        if(!email || !password){
-            return res.status(400).send({
-                status:101,
-                error:"Request ini membutuhkan parameter email dan password",
-                data:null
-            })
-        }
-
-        if(!validateEmail(email)) {
-            return res.status(400).send({
-                status:102,
-                error:"Parameter email tidak sesuai format",
-                data:null
-            })
-        }
-        if(password.length < 8){
-            return res.status(400).send({
-                status:103,
-                error:"Parameter password memiliki panjang kurang dari 8",
-                data:null
-            })
-        }
 
         const membership = await getMembershipByEmailService(email)
         if(membership){
@@ -47,6 +27,130 @@ export const registration = async (req,res,next) => {
         })
     }
     catch(err){
+        return res.status(500).send({
+            error:"Internal Server Error"
+        })
+    }
+}
+
+export const login = async (req,res) => {
+    try{
+        const {email,password} = req.body
+
+        const membership = await getMembershipByEmailService(email)
+        if(!membership){
+            return res.status(401).send({
+                status:103,
+                message:"Username atau password salah"
+            })
+        }
+
+        const hashedPassword = membership.password
+        const passwordMatch = await bcrypt.compare(password,hashedPassword)
+        if(!passwordMatch){
+            return res.status(401).send({
+                status:103,
+                message:"Username atau password salah"
+            })
+        }
+
+        const token = jwt.sign({
+            email:membership.email
+        },process.env.JWT_SECRET_KEY,{
+            expiresIn:'12h'
+        })
+
+        return res.status(200).send({
+            status:0,
+            message:"Login Sukses",
+            data:{
+                token
+            }
+        })
+
+    }
+    catch(err){
+        return res.status(500).send({
+            error:"Internal Server Error"
+        })
+    }
+}
+
+export const getProfile = async (req,res) => {
+    try{
+        const email = req.email
+        const membership = await getMembershipByEmailService(email)
+        return res.status(200).send({
+            status:0,
+            message:'Sukses',
+            data:{
+                email:membership.email,
+                first_name:membership.first_name,
+                last_name:membership.last_name,
+                profile_image:membership.profile_image
+            }
+        })
+
+    }
+    catch(err){
+        return res.status(500).send({
+            error:"Internal Server Error"
+        })
+    }
+}
+
+export const updateProfile = async(req,res) => {
+    try{
+        const email = req.email 
+        const {first_name,last_name} = req.body
+
+        const membership = await updateProfileMembershipService(email,first_name,last_name)
+        return res.status(200).send({
+            status:0,
+            message:"Update Profile berhasil",
+            data:{
+                email:membership.email,
+                first_name: membership.first_name,
+                last_name: membership.last_name,
+                profile_image: membership.profile_image
+            }
+        })
+    }
+    catch(err){
+        return res.status(500).send({
+            error:"Internal Server Error"
+        })
+    }
+}
+
+export const updateProfileImage = async(req,res) => {
+    try{
+        // "fieldname": "image",
+        // "originalname": "ice-cream-1274894_1280 (1).jpg",
+        // "encoding": "7bit",
+        // "mimetype": "image/jpeg",
+        // "destination": "uploads/",
+        // "filename": "1733580341890-865352386.jpg",
+        // "path": "uploads/1733580341890-865352386.jpg",
+        // "size": 108511
+        const {filename} = req.file
+        const email = req.email
+        console.log("req = ",req)
+
+        const membership = await updateProfileImageMembershipService(email,filename)
+        return res.status(200).send({
+            status:0,
+            message:"Update profile image sukses",
+            data:{
+                email:membership.email,
+                first_name: membership.first_name,
+                last_name: membership.last_name,
+                profile_image: `${req.headers.host}/images/${membership.filename_image}`
+            }
+        })
+    }
+    catch(err){
+        console.log("updateProfileImage err = ",err)
         return res.status(500).send({
             error:"Internal Server Error"
         })
