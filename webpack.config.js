@@ -1,4 +1,5 @@
-const path = require('path');
+import path from 'path';
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 
 module.exports = {
   // Entry point: The main file of your application
