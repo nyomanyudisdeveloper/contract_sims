@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from "uuid"
 import dotenv from 'dotenv'
 
 
-// dotenv.config()
+dotenv.config()
 
-// const {privateKey} = JSON.parse(process.env.GCP_PRIVATE_KEY)
+const {privateKey} = JSON.parse(process.env.GCP_PRIVATE_KEY)
 // admin.initializeApp({
 //     credential: admin.credential.cert({
 //         type:process.env.GCP_TYPE,
