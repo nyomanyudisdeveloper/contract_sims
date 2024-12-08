@@ -1,11 +1,12 @@
 import { getBannersService, getServicesModel } from "../model/information.js"
+import { ResponseStatus } from "../utils/responseHelper.js"
 
 
 export const getBanners = async (req,res) => {
     try{
         const banners = await getBannersService()
         return res.status(200).send({
-            status:0,
+            status:ResponseStatus.SUCCESS,
             message:"Sukses",
             data:banners
         })
