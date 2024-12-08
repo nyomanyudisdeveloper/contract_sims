@@ -1,5 +1,5 @@
 import express from 'express'
-import { getProfile, login, registration, updateProfile, updateProfileImage } from '../controllers/membershipController.js'
+import { getBalance, getProfile, login, registration, updateProfile, updateProfileImage } from '../controllers/membershipController.js'
 import { verifyToken } from '../middleware/authMiddleware.js'
 import { checkEmailAndPasswordExists, checkFirstAndLastNameExists, validateEmailAndPassword } from '../middleware/membershipMiddleware.js'
 
@@ -179,5 +179,29 @@ routes.put("/profile/update",verifyToken,checkFirstAndLastNameExists,updateProfi
  *         description: Internal Server Error
  */
 routes.put("/profile/image",verifyToken, checkFileIsImage,updateProfileImage)
+
+
+/**
+ * @swagger
+ * /balance:
+ *   get:
+ *     summary: Get Balance
+ *     tags:
+ *        - 3. Module Transaction
+ *     security:
+ *       - BearerAuth: []
+ *     description: Create new user with email, password, and role [admin,cs,supervisor]
+ *     responses:
+ *       200:
+ *         description: Create new user success
+ *       401:
+ *         description: Invalid data body
+ *       400:
+ *         description: This request required body username, password, and role
+ *       500:
+ *         description: Internal Server Error
+ */
+routes.get("/balance",verifyToken,getBalance)
+
 
 export default routes

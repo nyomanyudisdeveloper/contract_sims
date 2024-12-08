@@ -156,3 +156,22 @@ export const updateProfileImage = async(req,res) => {
         })
     }
 }
+
+export const getBalance = async(req,res) => {
+    try{
+        const email = req.email
+        const membership = await getMembershipByEmailService(email)
+        return res.status(200).send({
+            status:0,
+            message:'Sukses',
+            data:{
+                balance:membership.balance
+            }
+        })
+    }
+    catch(err){
+        return res.status(500).send({
+            error:"Internal Server Error"
+        })
+    }
+}
