@@ -2,6 +2,7 @@ import { getMembershipByEmailService, registrationService, updateProfileImageMem
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
+import { uploadImageToFirebaseStorage } from "../utils/firebaseStorage.js"
 
 dotenv.config()
 
@@ -125,19 +126,10 @@ export const updateProfile = async(req,res) => {
 
 export const updateProfileImage = async(req,res) => {
     try{
-        // "fieldname": "image",
-        // "originalname": "ice-cream-1274894_1280 (1).jpg",
-        // "encoding": "7bit",
-        // "mimetype": "image/jpeg",
-        // "destination": "uploads/",
-        // "filename": "1733580341890-865352386.jpg",
-        // "path": "uploads/1733580341890-865352386.jpg",
-        // "size": 108511
-        const {filename} = req.file
         const email = req.email
-        console.log("req = ",req)
+        const urlImage = await uploadImageToFirebaseStorage(req.file)
 
-        const membership = await updateProfileImageMembershipService(email,filename)
+        const membership = await updateProfileImageMembershipService(email,urlImage)
         return res.status(200).send({
             status:0,
             message:"Update profile image sukses",
@@ -145,7 +137,7 @@ export const updateProfileImage = async(req,res) => {
                 email:membership.email,
                 first_name: membership.first_name,
                 last_name: membership.last_name,
-                profile_image: `${req.headers.host}/images/${membership.filename_image}`
+                profile_image: membership.filename_image
             }
         })
     }
