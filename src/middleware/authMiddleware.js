@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { ResponseStatus } from '../utils/responseHelper.js'
 
 dotenv.config()
 
@@ -8,17 +9,21 @@ export const verifyToken = async(req,res,next) => {
         const token = req.header('Authorization').replace("Bearer","").replace(/ /g,'')
         if(token == undefined) {
             return res.status(401).send({
-                error:'Token tidak valid atau kadaluarsa'
+                status:ResponseStatus.INVALID_TOKEN,
+                message:'Token tidak valid atau kadaluwarsa', 
+                data:null
             })
         }
 
         const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY)
-        req.email = decoded.email
+        req.membership_id = decoded.membership_id
         next()
     }
     catch(err){
-        res.status(401).send({
-            error:'Token tidak valid atau kadaluarsa'
+        return res.status(401).send({
+            status:ResponseStatus.INVALID_TOKEN,
+            message:'Token tidak valid atau kadaluwarsa', 
+            data:null
         })
     }
 }

@@ -1,26 +1,17 @@
 import multer from 'multer';
+import { ResponseStatus } from '../utils/responseHelper.js';
 
 const uploadImage = multer({ 
-    storage: multer.memoryStorage(),
-    // limits: { fileSize: 5 * 1024 * 1024 }, 
-    // fileFilter: (req, file, cb) => {
-    //     if (file.mimetype.startsWith('image/')) {
-    //         cb(null, true);
-    //     } else {
-    //         cb(new Error('Only image files are allowed!'), false);
-    //     }
-    // }
+    storage: multer.memoryStorage()
 });
 
 export const checkFileIsImage = async (req,res,next) => {
-    console.log("checkFileIsImage")
     const uploadSingle = uploadImage.single("image");
 
     uploadSingle(req, res, (err) => {
-        console.log("uploadSingle")
         if (err) {
             return res.status(400).send({
-                status:102,
+                status:ResponseStatus.BAD_REQUEST,
                 message: 'Format Image tidak sesuai',
                 data:null 
             })
@@ -28,8 +19,17 @@ export const checkFileIsImage = async (req,res,next) => {
 
         if (!req.file) {
             return res.status(400).send({ 
-                status:102,
+                status:ResponseStatus.BAD_REQUEST,
                 message: 'Field file tidak boleh kosong',
+                data:null 
+            });
+        }
+
+        const {mimetype} = req.file
+        if(mimetype != 'image/png' && mimetype != 'image/jpeg'){
+            return res.status(400).send({ 
+                status:ResponseStatus.BAD_REQUEST,
+                message: 'Format Image tidak sesuai',
                 data:null 
             });
         }

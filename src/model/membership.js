@@ -8,6 +8,14 @@ export const registrationService = async (email,first_name,last_name,password) =
     return res.rows[0]
 }
 
+export const getMembershipByIDService = async(id) => {
+    const text = "SELECT * FROM membership WHERE id = $1 and is_active = true"
+    const values = [id]
+    
+    const res = await pool.query(text,values)
+    return res.rows[0]
+}
+
 export const getMembershipByEmailService = async(email) => {
     const text = "SELECT * FROM membership WHERE email = $1 and is_active = true"
     const values = [email]
@@ -16,18 +24,17 @@ export const getMembershipByEmailService = async(email) => {
     return res.rows[0]
 }
 
-export const updateProfileMembershipService = async(email,first_name,last_name) => {
-    const text = "UPDATE membership SET first_name=$1,last_name=$2 WHERE email=$3 AND is_active=true RETURNING *"
-    const values= [first_name,last_name,email]
+export const updateProfileMembershipService = async(id,first_name,last_name) => {
+    const text = "UPDATE membership SET first_name=$1,last_name=$2 WHERE id=$3 AND is_active=true RETURNING *"
+    const values= [first_name,last_name,id]
 
     const res = await pool.query(text,values)
     return res.rows[0]
 }
 
-export const updateProfileImageMembershipService = async(email,filename) => {
-    const text = "UPDATE membership SET fileName_image=$1 WHERE email=$2 AND is_active=true RETURNING *"
-    const values = [filename,email]
-    console.log("filename 123 = ",filename)
+export const updateProfileImageMembershipService = async(id,filename) => {
+    const text = "UPDATE membership SET fileName_image=$1 WHERE id=$2 AND is_active=true RETURNING *"
+    const values = [filename,id]
 
     const res = await pool.query(text,values)
     return res.rows[0]
