@@ -76,21 +76,21 @@ export const validateTopUpAmount = async (req,res,next) => {
     const {top_up_amount} = req.body
     if(!top_up_amount){
         return res.status(400).send({
-            status:102,
+            status:ResponseStatus.BAD_REQUEST,
             message:"Parameter top_up_amount harus diisi",
             data:null
         })
     }
     else if(typeof top_up_amount != 'number'){
         return res.status(400).send({
-            status:102,
+            status:ResponseStatus.BAD_REQUEST,
             message:"Paramter amount hanya boleh angka dan tidak boleh lebih kecil dari 0",
             data:null
         })
     }
     else if(top_up_amount < 0){
         return res.status(400).send({
-            status:102,
+            status:ResponseStatus.BAD_REQUEST,
             message:"Paramter amount hanya boleh angka dan tidak boleh lebih kecil dari 0",
             data:null
         })

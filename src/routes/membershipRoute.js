@@ -470,21 +470,69 @@ routes.put("/profile/image",verifyToken, checkFileIsImage,updateProfileImage)
  * @swagger
  * /balance:
  *   get:
- *     summary: Get Balance
  *     tags:
  *        - 3. Module Transaction
  *     security:
  *       - BearerAuth: []
- *     description: Create new user with email, password, and role [admin,cs,supervisor]
+ *     description: 
+ *          <div>
+ *              <b>API Balance Private (memerlukan Token untuk mengaksesnya)</b>
+ *              <p>Digunakan untuk mendapatkan informasi balance / saldo terakhir dari User</p>
+ *              <p><i>Ketentuan :</i></p>
+ *              <ol>
+ *                  <li>Service ini harus menggunakan <b>Bearer Token JWT</b> untuk mengaksesnya</li>
+ *                  <li>Tidak ada parameter membership id di query param url ataupun request body, parameter membership id diambil dari payload JWT yang didapatkan dari hasil login</li>
+ *              </ol>
+ *          </div>
  *     responses:
  *       200:
- *         description: Create new user success
+ *         description: Request Successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 0
+ *                 message:
+ *                   type: string
+ *                   example: "Get Balance Berhasil"
+ *                 data:
+ *                   type: object
+ *                   example: {"balance":100000}
  *       401:
- *         description: Invalid data body
- *       400:
- *         description: This request required body username, password, and role
+ *         description: Unathorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 108
+ *                 message:
+ *                   type: string
+ *                   example: "Token tidak valid atau kadaluwarsa"
+ *                 data:
+ *                   type: object
+ *                   example: null
  *       500:
  *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: "Internal Server Error"
+ *                 data:
+ *                   type: object
+ *                   example: null
  */
 routes.get("/balance",verifyToken,getBalance)
 

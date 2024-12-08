@@ -40,17 +40,17 @@ export const updateProfileImageMembershipService = async(id,filename) => {
     return res.rows[0]
 }
 
-export const topUpBalanceMembershipService = async (email,amount) => {
-    const text = "UPDATE membership SET BALANCE = (SELECT balance from membership WHERE email=$1 and is_active=true) + $2 WHERE email=$1 and is_active=true  RETURNING * "
-    const values = [email,amount]
+export const topUpBalanceMembershipService = async (id,amount) => {
+    const text = "UPDATE membership SET BALANCE = (SELECT balance from membership WHERE id=$1 and is_active=true) + $2 WHERE id=$1 and is_active=true  RETURNING * "
+    const values = [id,amount]
 
     const res = await pool.query(text,values)
     return res.rows[0]
 }
 
-export const paymentBalanceMembershipService = async (email,amount) => {
-    const text = "UPDATE membership SET BALANCE = (SELECT balance from membership WHERE email=$1 and is_active=true) - $2 WHERE email=$1 and is_active=true  RETURNING * "
-    const values = [email,amount]
+export const paymentBalanceMembershipService = async (id,amount) => {
+    const text = "UPDATE membership SET BALANCE = (SELECT balance from membership WHERE id=$1 and is_active=true) - $2 WHERE id=$1 and is_active=true  RETURNING * "
+    const values = [id,amount]
 
     const res = await pool.query(text,values)
     return res.rows[0]

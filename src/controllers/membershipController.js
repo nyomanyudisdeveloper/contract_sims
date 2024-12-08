@@ -113,9 +113,7 @@ export const updateProfile = async(req,res) => {
         })
     }
     catch(err){
-        return res.status(500).send({
-            error:"Internal Server Error"
-        })
+        return res.status(500).send(getResponseInternalServerError())
     }
 }
 
@@ -137,19 +135,16 @@ export const updateProfileImage = async(req,res) => {
         })
     }
     catch(err){
-        console.log("updateProfileImage err = ",err)
-        return res.status(500).send({
-            error:"Internal Server Error"
-        })
+        return res.status(500).send(getResponseInternalServerError())
     }
 }
 
 export const getBalance = async(req,res) => {
     try{
-        const email = req.email
-        const membership = await getMembershipByEmailService(email)
+        const membership_id = req.membership_id
+        const membership = await getMembershipByIDService(membership_id)
         return res.status(200).send({
-            status:0,
+            status:ResponseStatus.SUCCESS,
             message:'Sukses',
             data:{
                 balance:membership.balance
@@ -157,8 +152,6 @@ export const getBalance = async(req,res) => {
         })
     }
     catch(err){
-        return res.status(500).send({
-            error:"Internal Server Error"
-        })
+        return res.status(500).send(getResponseInternalServerError())
     }
 }

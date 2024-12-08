@@ -1,32 +1,33 @@
 import { getServiceByID } from "../model/information.js"
-import { getMembershipByEmailService } from "../model/membership.js"
+import { getMembershipByIDService } from "../model/membership.js"
+import { ResponseStatus } from "../utils/responseHelper.js"
 
 
 export const validateServiceID = async (req,res,next) => {
     const {service_id} = req.body
-    const email = req.email
+    const membership_id = req.membership_id
     if(!service_id){
         return res.status(400).send({
-            status:102,
+            status:ResponseStatus.BAD_REQUEST,
             message:"Parameter service_id harus diisi",
             data:null
         })
     }
     const service = await getServiceByID(service_id)
-    const {service_tarif} = service
     if(!service){
         return res.status(400).send({
-            status:102,
+            status:ResponseStatus.BAD_REQUEST,
             message:"Service atau layanan tidak ditemukan",
             data:null
         })
     }
+    const {service_tarif} = service
     
-    const membership = await getMembershipByEmailService(email)
+    const membership = await getMembershipByIDService(membership_id)
     const {balance} = membership
     if(balance < service_tarif){
         return res.status(400).send({
-            status:102,
+            status:ResponseStatus.BAD_REQUEST,
             message:"Saldo balance tidak cukup untuk membayar service atau layanan ini",
             data:null
         })
