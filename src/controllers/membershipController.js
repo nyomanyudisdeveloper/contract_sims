@@ -72,7 +72,7 @@ export const login = async (req,res) => {
     }
     catch(err){
         return res.status(500).send({
-            error:"Internal Server Error"
+            error:err
         })
     }
 }
