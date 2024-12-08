@@ -55,18 +55,18 @@ export const login = async (req,res) => {
             })
         }
 
-        const token = jwt.sign({
-            email:membership.email
-        },process.env.JWT_SECRET_KEY,{
-            expiresIn:'12h'
-        })
+        // const token = jwt.sign({
+        //     email:membership.email
+        // },process.env.JWT_SECRET_KEY,{
+        //     expiresIn:'12h'
+        // })
 
         return res.status(200).send({
             status:0,
             message:"Login Sukses",
-            data:{
-                token
-            }
+            // data:{
+            //     token
+            // }
         })
 
     }
