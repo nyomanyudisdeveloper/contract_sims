@@ -11,11 +11,11 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// app.use("",membershipRouter)
-// app.use("",informationRouter)
-// app.use("",transactionRouter)
+app.use("",membershipRouter)
+app.use("",informationRouter)
+app.use("",transactionRouter)
 
 
 app.get("/",async (req,res,next) => {

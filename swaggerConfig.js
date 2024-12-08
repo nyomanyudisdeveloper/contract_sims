@@ -5,9 +5,9 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0', // Specify the OpenAPI version
     info: {
-      title: 'Credit Approval API',
+      title: 'API Contract SIMS PPOB',
       version: '1.0.0',
-      description: 'API documentation for credit approval',
+      description: 'Documentation for Take Home Test API',
     },
     components: {
       securitySchemes: {
@@ -22,6 +22,11 @@ const swaggerOptions = {
       {
         BearerAuth: [], // Apply globally to all endpoints by default
       },
+    ],
+    tags: [
+      { name: '1. Module Membership' },
+      { name: '2. Module Information' },
+      { name: '3. Module Transaction' },
     ],
   },
   apis: ['./src/routes/*.js'], // Path to your route files with Swagger annotations
