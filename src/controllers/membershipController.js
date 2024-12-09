@@ -15,7 +15,7 @@ export const registration = async (req,res) => {
         if(membership){
             return res.status(400).send({
                 status:ResponseStatus.BAD_REQUEST,
-                error:"Email sudah terdaftar",
+                message:"Email sudah terdaftar",
                 data:null
             })
         }
@@ -24,7 +24,7 @@ export const registration = async (req,res) => {
         const data = await registrationService(email,first_name,last_name,hashedPassowrd)
         return res.status(200).send({
             status:ResponseStatus.SUCCESS,
-            error:"Registrasi berhasil silahkan login",
+            message:"Registrasi berhasil silahkan login",
             data:null
         })
     }
