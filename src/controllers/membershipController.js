@@ -127,7 +127,7 @@ export const updateProfileImage = async(req,res) => {
         const membership = await updateProfileImageMembershipService(membership_id,urlImage)
         return res.status(200).send({
             status:ResponseStatus.SUCCESS,
-            message:"Update profile image sukses",
+            message:"Update Profile Image berhasil",
             data:{
                 email:membership.email,
                 first_name: membership.first_name,
