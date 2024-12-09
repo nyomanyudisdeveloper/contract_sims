@@ -15,6 +15,7 @@ Adalah sebuah API yang secara garis besar untuk menghandle request untuk membuat
 - Handle Request (GET, POST, PUT)
 - Documentation 
 - File Upload 
+- Unit Test
 
 ### Technologies 
 - Javascript 
@@ -25,3 +26,24 @@ Adalah sebuah API yang secara garis besar untuk menghandle request untuk membuat
 - Vercel 
 - Superbase 
 - Firebase Storage
+- Jest 
+- Joi 
+- supertest
+
+## Get Started 
+1. Silahkan persiapkan PC anda dengan enviroment Node JS dengan mengikuti instruksi di [link](https://nodejs.org/en) ini
+2. Silahkan download project ini dengan cara download zip atau git clone 
+3. tambahkan file .env dengan key yang terdiri dari 
+    - PORT,ENV = untuk running proeject di port dan enviroment apa 
+    - PG_HOST_DEV,PG_PORT_DEV,PG_USER_DEV,PG_PASSWORD_DEV,PG_DATABASE_DEV = untuk setting konfigurasi ke database postgresql 
+    - GCP_TYPE,GCP_PROJECT_ID,GCP_PRIVATE_KEY_ID,GCP_PRIVATE_KEY,GCP_CLIENT_EMAIL,GCP_CLIENT_ID,GCP_AUTH_URI,GCP_TOKEN_URI,GCP_AUTH_PROVIDER,GCP_CERT_URL,GCP_UNIVERSE_DOMAIN,GCP_BUCKET_URL = untuk setting konfigurasi ke cloud storage firebase
+    - JWT_SECRET_KEY = untuk secret key JWT Token saat login
+4. run "npm install" di terminal untuk menginstall depedency node js 
+5. run "npm run server" di terminal untuk menjalkan project ini di local
+6. run "npm run test" di terminal jika ingin menjalankan unit test
+
+## Tampilan Swagger 
+![alt text](image.png)
+
+## Tampilan Hasil Unit Test
+![alt text](image-1.png)

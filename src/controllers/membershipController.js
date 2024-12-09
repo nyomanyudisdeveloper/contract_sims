@@ -147,7 +147,7 @@ export const getBalance = async(req,res) => {
         const membership = await getMembershipByIDService(membership_id)
         return res.status(200).send({
             status:ResponseStatus.SUCCESS,
-            message:'Sukses',
+            message:'Get Balance Berhasil',
             data:{
                 balance:membership.balance
             }
