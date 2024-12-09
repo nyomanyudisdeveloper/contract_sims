@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../app.js';
 import { v4 as uuidv4 } from 'uuid';
-import { responseSchemaLoginSuccess } from './schema/schemaMembership.js';
+import { responseSchemaLoginSuccess, responseSchemaProfileSuccess } from './schema/schemaMembership.js';
 
 describe('API Test /Registration', () => {
     it('POST /registration sukses regristrasi membership', async () => {
@@ -106,12 +106,36 @@ describe('API Test /login' ,() => {
     it('POST /login validate email dan password salah', async () => {
         const payload = {email:'test@123a.com',password:'vfjvfkjvnnb'}
         const response = await request(app).post('/login').send(payload)
-        console.log("response.body - ",response.body)
         expect(response.statusCode).toBe(401)
         expect(response.body).toEqual({
             "status": 103,
             "message": "Username atau password salah",
             "data": null
+        })
+    })
+})
+
+describe('API test /profile', () => {
+    it("GET /profile success", async() => {
+        const responseLogin = await request(app).post('/login').send({
+            email:'test@mailinator.com',
+            password:'admin123'
+        })
+        const {token} = responseLogin.body.data
+        const responseProfile = await request(app).get('/profile').set('Authorization',`Bearer ${token}`)
+
+        expect(responseProfile.statusCode).toBe(200)
+        const {error} = responseSchemaProfileSuccess.validate(responseProfile.body)
+        expect(error).toBeUndefined()
+    })
+
+    it("GET /profile unauthorized", async() => {
+        const response = await request(app).get('/profile')
+        expect(response.statusCode).toBe(401)
+        expect(response.body).toEqual({
+            "status":108,
+            "message":"Token tidak valid atau kadaluwarsa",
+            "data":null
         })
     })
 })

@@ -7,3 +7,14 @@ export const responseSchemaLoginSuccess = Joi.object({
         token: Joi.string().required()
     }).required()
 })
+
+export const responseSchemaProfileSuccess = Joi.object({
+    status: Joi.number().valid(0).required(),
+    message: Joi.string().valid("Sukses").required(),
+    data:Joi.object({
+        email: Joi.string().required(),
+        first_name: Joi.string().required(),
+        last_name: Joi.string().required(),
+        profile_image: Joi.string().allow(null)
+    })
+})
