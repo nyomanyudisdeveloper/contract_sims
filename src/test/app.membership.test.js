@@ -2,24 +2,7 @@ import request from 'supertest';
 import app from '../app.js';
 import { v4 as uuidv4 } from 'uuid';
 import { responseSchemaLoginSuccess, responseSchemaProfileSuccess, responseSchemaUpdateProfileSuccess } from './schema/schemaMembership.js';
-
-const expectNoToken = (response) => {
-    expect(response.statusCode).toBe(401)
-    expect(response.body).toEqual({
-        "status":108,
-        "message":"Token tidak valid atau kadaluwarsa",
-        "data":null
-    })
-}
-
-const getToken = async () => {
-    const responseLogin = await request(app).post('/login').send({
-        email:'test@mailinator.com',
-        password:'admin123'
-    })
-    const {token} = responseLogin.body.data
-    return token
-}
+import { expectNoToken ,getToken} from './utils/requestTemplate.js';
 
 describe('API Test /Registration', () => {
     it('POST /registration sukses regristrasi membership', async () => {
