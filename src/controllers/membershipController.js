@@ -41,7 +41,8 @@ export const login = async (req,res) => {
         if(!membership){
             return res.status(401).send({
                 status:ResponseStatus.UNAUTHORIZED,
-                message:"Username atau password salah"
+                message:"Username atau password salah",
+                data:null
             })
         }
 
@@ -50,7 +51,8 @@ export const login = async (req,res) => {
         if(!passwordMatch){
             return res.status(401).send({
                 status:ResponseStatus.UNAUTHORIZED,
-                message:"Username atau password salah"
+                message:"Username atau password salah",
+                data:null
             })
         }
 
