@@ -1,7 +1,25 @@
 import request from 'supertest';
 import app from '../app.js';
 import { v4 as uuidv4 } from 'uuid';
-import { responseSchemaLoginSuccess, responseSchemaProfileSuccess } from './schema/schemaMembership.js';
+import { responseSchemaLoginSuccess, responseSchemaProfileSuccess, responseSchemaUpdateProfileSuccess } from './schema/schemaMembership.js';
+
+const expectNoToken = (response) => {
+    expect(response.statusCode).toBe(401)
+    expect(response.body).toEqual({
+        "status":108,
+        "message":"Token tidak valid atau kadaluwarsa",
+        "data":null
+    })
+}
+
+const getToken = async () => {
+    const responseLogin = await request(app).post('/login').send({
+        email:'test@mailinator.com',
+        password:'admin123'
+    })
+    const {token} = responseLogin.body.data
+    return token
+}
 
 describe('API Test /Registration', () => {
     it('POST /registration sukses regristrasi membership', async () => {
@@ -117,11 +135,7 @@ describe('API Test /login' ,() => {
 
 describe('API test /profile', () => {
     it("GET /profile success", async() => {
-        const responseLogin = await request(app).post('/login').send({
-            email:'test@mailinator.com',
-            password:'admin123'
-        })
-        const {token} = responseLogin.body.data
+        const token = await getToken()
         const responseProfile = await request(app).get('/profile').set('Authorization',`Bearer ${token}`)
 
         expect(responseProfile.statusCode).toBe(200)
@@ -131,11 +145,56 @@ describe('API test /profile', () => {
 
     it("GET /profile unauthorized", async() => {
         const response = await request(app).get('/profile')
-        expect(response.statusCode).toBe(401)
+        expectNoToken(response)
+    })
+})
+
+describe('API test PUT /profile/update', () => {
+    it("PUT /profile/update sukses", async() => {
+        const token = await getToken()
+        const payload = {first_name:'ada',last_name:'ada'}
+        const response = await request(app).put('/profile/update')
+            .send(payload)
+            .set('Authorization',`Bearer ${token}`)
+        
+        expect(response.statusCode).toBe(200)
+        const {error} = responseSchemaUpdateProfileSuccess.validate(response.body)
+        expect(error).toBeUndefined()
+    })
+
+    it("PUT /profile/update Unauthorized", async() => {
+        const payload = {first_name:'ada','last_name':'ada'}
+        const response = await request(app).put('/profile/update').send(payload)
+        expectNoToken(response)
+    })
+
+    it("PUT /profile/update Parameter first_name harus diisi", async() => {
+        const token = await getToken()
+        const payload = {last_name:'ada'}
+        const response = await request(app).put('/profile/update')
+            .send(payload)
+            .set('Authorization',`Bearer ${token}`)
+        
+        expect(response.statusCode).toBe(400)
         expect(response.body).toEqual({
-            "status":108,
-            "message":"Token tidak valid atau kadaluwarsa",
-            "data":null
+            status:102,
+            message:"Parameter first_name harus diisi",
+            data:null
+        })
+    })
+
+    it("PUT /profile/update Parameter last_name harus diisi", async() => {
+        const token = await getToken()
+        const payload = {first_name:'ada'}
+        const response = await request(app).put('/profile/update')
+            .send(payload)
+            .set('Authorization',`Bearer ${token}`)
+        
+        expect(response.statusCode).toBe(400)
+        expect(response.body).toEqual({
+            status:102,
+            message:"Parameter last_name harus diisi",
+            data:null
         })
     })
 })
