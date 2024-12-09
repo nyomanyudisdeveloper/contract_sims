@@ -33,5 +33,6 @@ CREATE TABLE transaction (
   service_id INT REFERENCES services (id),
   total_amount INT NOT NULL,
   created_on TIMESTAMP NOT NULL DEFAULT NOW(),
+  membership_id INT REFERENCES membership (id),
   is_active BOOLEAN NOT NULL DEFAULT true
 )
