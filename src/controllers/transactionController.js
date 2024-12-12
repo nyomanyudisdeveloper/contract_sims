@@ -3,14 +3,22 @@ import { createNewTransactionService, getDataPaginationTransactionService, getDe
 import { getResponseInternalServerError, ResponseStatus } from "../utils/responseHelper.js"
 import { v1 as uuidv4} from "uuid"
 import { TransactionStatus } from "../utils/transactionHelper.js"
+import sendEmail from "../utils/sendEmail.js"
+import { templateTopSuccess, templateTransactionServiceSuccess } from "../utils/templateHTML/index.js"
+import { getFormatDateToString } from "../utils/stringHelper.js"
 
 export const topUp = async (req,res,next) => {
     try{
         const invoice_number = uuidv4()
         const {top_up_amount} = req.body
         const membership_id = req.membership_id
+        const email = req.email
         const membership = await topUpBalanceMembershipService(membership_id,top_up_amount)
         const transaction = await createNewTransactionService(invoice_number,TransactionStatus.TOPUP,null,top_up_amount,membership_id)
+
+        const templateHTML = templateTopSuccess(membership.first_name,membership.last_name,top_up_amount,membership.balance)
+
+        await sendEmail(membership.email,'Transaction Top Up Amount Success',templateHTML)
         return res.status(200).send({
             status:ResponseStatus.SUCCESS,
             message:"Top Up Balance berhasil",
@@ -34,6 +42,12 @@ export const transaction = async (req,res) => {
         const newTransaction = await createNewTransactionService(invoice_number,TransactionStatus.PAYMENT,service_id,amount,membership_id)
 
         const transactionDetail = await getDetailTransactionService(newTransaction.id)
+        const templateHTML = templateTransactionServiceSuccess(
+            membership.first_name,membership.last_name,
+            transactionDetail.invoice_number,transactionDetail.service_code,
+            transactionDetail.service_name,transactionDetail.total_amount,getFormatDateToString(transactionDetail.created_on))
+
+        await sendEmail(membership.email,'Transaction Service Success',templateHTML)
         return res.status(200).send({
             status:ResponseStatus.SUCCESS,
             message:"Transaksi Berhasil",

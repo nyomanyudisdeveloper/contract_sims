@@ -57,7 +57,8 @@ export const login = async (req,res) => {
         }
 
         const token = jwt.sign({
-            membership_id:membership.id
+            membership_id:membership.id,
+            email:membership.email
         },process.env.JWT_SECRET_KEY,{
             expiresIn:'12h'
         })

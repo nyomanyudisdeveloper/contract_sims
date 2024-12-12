@@ -68,3 +68,45 @@ describe('API Test POST /topup', () => {
         expectNoToken(response)
     })
 })
+
+describe('API Test POST /transaction', () => {
+    it('POST /transaction parameter service_id tidak ada', async () => {
+        const payload = {service_id:0}
+        const token = await getToken()
+        const response = await request(app).post('/transaction').set('Authorization',`Bearer ${token}`).send(payload)
+        expect(response.statusCode).toBe(400)
+        expect(response.body).toEqual({
+            status:102,
+            message:"Service atau layanan tidak ditemukan",
+            data:null
+        })
+    })
+
+    it('POST /transaction parameter service_id tidak ada', async () => {
+        const payload = {service_id:0}
+        const token = await getToken()
+        const response = await request(app).post('/transaction').set('Authorization',`Bearer ${token}`).send(payload)
+        expect(response.statusCode).toBe(400)
+        expect(response.body).toEqual({
+            status:102,
+            message:"Service atau layanan tidak ditemukan",
+            data:null
+        })
+    })
+
+    it('POST /transaction parameter service_id harus diisi', async () => {
+        const token = await getToken()
+        const response = await request(app).post('/transaction').set('Authorization',`Bearer ${token}`)
+        expect(response.statusCode).toBe(400)
+        expect(response.body).toEqual({
+            status:102,
+            message:"Parameter service_id harus diisi",
+            data:null
+        })
+    })
+
+    it('POST /transaction unauthorized', async () => {
+        const response = await request(app).post('/transaction')
+        expectNoToken(response)
+    })
+})
