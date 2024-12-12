@@ -1,4 +1,4 @@
-import { getMembershipByEmailService,getMembershipByIDService, registrationService, updateProfileImageMembershipService, updateProfileMembershipService } from "../model/membership.js"
+import { getMembershipByEmailService,getMembershipByIDService, registrationService, updateMembershipLimitLoginService, updateProfileImageMembershipService, updateProfileMembershipService } from "../model/membership.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
@@ -38,6 +38,9 @@ export const login = async (req,res) => {
         const {email,password} = req.body
 
         const membership = await getMembershipByEmailService(email)
+        console.log(membership)
+        
+
         if(!membership){
             return res.status(401).send({
                 status:ResponseStatus.UNAUTHORIZED,
@@ -46,9 +49,18 @@ export const login = async (req,res) => {
             })
         }
 
+        if(membership.limit_login >= 3){
+            return res.status(401).send({
+                status:ResponseStatus.UNAUTHORIZED,
+                message:"Kamu tidak bisa login lagi dikarenakan gagal sebanyak 3x, Silahkan coba lagi 1 minggu ke depan",
+                data:null
+            })
+        }
+
         const hashedPassword = membership.password
         const passwordMatch = await bcrypt.compare(password,hashedPassword)
         if(!passwordMatch){
+            await updateMembershipLimitLoginService(membership.limit_login+1,membership.id)
             return res.status(401).send({
                 status:ResponseStatus.UNAUTHORIZED,
                 message:"Username atau password salah",
@@ -63,6 +75,7 @@ export const login = async (req,res) => {
             expiresIn:'12h'
         })
 
+        await updateMembershipLimitLoginService(0,membership.id)
         return res.status(200).send({
             status:ResponseStatus.SUCCESS,
             message:"Login Sukses",
@@ -73,6 +86,7 @@ export const login = async (req,res) => {
 
     }
     catch(err){
+        console.log(err)
         return res.status(500).send(getResponseInternalServerError())
     }
 }

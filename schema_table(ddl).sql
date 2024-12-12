@@ -6,6 +6,7 @@ CREATE TABLE membership (
   password TEXT NOT NULL,
   fileName_image TEXT,
   balance INT DEFAULT 0,
+  limit_login INT DEFAULT 0,
   is_active BOOLEAN NOT NULL DEFAULT true
 )
 
