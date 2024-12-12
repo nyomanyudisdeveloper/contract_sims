@@ -81,7 +81,7 @@ export const getTransactionHistory = async(req,res,next) => {
         const transaction_history = await getDataPaginationTransactionService(membership_id,param_offset,param_limit)
         return res.status(200).send({
             status:ResponseStatus.SUCCESS,
-            message:"Transaksi Berhasil",
+            message:"Get History Berhasil",
             data:{
                 offset:param_offset,
                 limit:param_limit,
