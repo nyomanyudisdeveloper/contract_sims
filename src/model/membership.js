@@ -24,6 +24,13 @@ export const updateMembershipLimitLoginService = async(limit_login,id) => {
     return res.rows[0] 
 }
 
+export const resetLimitLogin = async() => {
+    const text = "UPDATE membership SET limit_login = 0,block_account_date= NULL WHERE NOW() <= block_account_date + interval '1' day * 7 RETURNING *"
+
+    const res = await pool.query(text)
+    return res.rows
+}
+
 export const getMembershipByEmailService = async(email) => {
     const text = "SELECT * FROM membership WHERE email = $1 and is_active = true"
     const values = [email]

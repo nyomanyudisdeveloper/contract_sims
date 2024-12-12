@@ -7,6 +7,7 @@ CREATE TABLE membership (
   fileName_image TEXT,
   balance INT DEFAULT 0,
   limit_login INT DEFAULT 0,
+  block_account_date TIMESTAMP NOT NULL DEFAULT NULL,
   is_active BOOLEAN NOT NULL DEFAULT true
 )
 
